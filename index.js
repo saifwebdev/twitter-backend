@@ -55,6 +55,7 @@ app.use((req, res, next) => {
 app.use('/api/user', userRoutes);
 app.use('/api/tweet', tweetRoutes);
 mongoose.connect('mongodb+srv://saif_web_dev:37444547@cluster0.eobeuhu.mongodb.net/?retryWrites=true&w=majority');
+
 server.listen(process.env.PORT || 3000, () => {
     console.log('Server listening on PORT 3000...')
 });
