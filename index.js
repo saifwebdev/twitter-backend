@@ -8,28 +8,28 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: true,
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-});
+// const io = require('socket.io')(server, {
+//     cors: {
+//         origin: true,
+//         methods: ['GET', 'POST'],
+//         credentials: true
+//     }
+// });
 const User = require('./schemas/userSchema');
 
-io.on('connection', async (socket) => {
-    const username = socket.handshake.query.username;
-    await User.updateOne(
-        {
-            username: username
-        },
-        {
-            $set: {
-                socketid: socket.id
-            }
-        }
-    )
-});
+// io.on('connection', async (socket) => {
+//     const username = socket.handshake.query.username;
+//     await User.updateOne(
+//         {
+//             username: username
+//         },
+//         {
+//             $set: {
+//                 socketid: socket.id
+//             }
+//         }
+//     )
+// });
 app.use(cors({
     origin: true,
     credentials: true
@@ -48,10 +48,10 @@ cloudinary.config({
     api_key: "352343729117897",
     api_secret: "N9YcZNBMneFCX50G0ITpixPmRIM"
 });
-app.use((req, res, next) => {
-    req.io = io
-    next()
-});
+// app.use((req, res, next) => {
+//     req.io = io
+//     next()
+// });
 app.use('/api/user', userRoutes);
 app.use('/api/tweet', tweetRoutes);
 mongoose.connect('mongodb+srv://saif_web_dev:37444547@cluster0.eobeuhu.mongodb.net/?retryWrites=true&w=majority');
