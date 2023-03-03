@@ -53,11 +53,11 @@ app.use((req, res, next) => {
     req.io = io
     next()
 });
-app.use(express.static(path.join(__dirname, '..', 'dist', 'twitter-clone')));
+app.use(express.static(path.join(__dirname, '.', 'twitter-clone')));
 app.use('/api/user', userRoutes);
 app.use('/api/tweet', tweetRoutes);
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'dist', 'twitter-clone', 'index.html'))
+    res.sendFile(path.join(__dirname, '.', 'twitter-clone', 'index.html'))
 });
 mongoose.connect('mongodb+srv://saif_web_dev:37444547@cluster0.eobeuhu.mongodb.net/?retryWrites=true&w=majority');
 
