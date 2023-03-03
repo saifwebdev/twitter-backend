@@ -11,7 +11,7 @@ const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: 'https://twitter-backend-xi.vercel.app',
+        origin: true,
         methods: ['GET', 'POST'],
         credentials: true
     }
@@ -32,7 +32,7 @@ io.on('connection', async (socket) => {
     )
 });
 app.use(cors({
-    origin: 'https://twitter-backend-xi.vercel.app',
+    origin: true,
     credentials: true
 }));
 app.use(cookieParser());
