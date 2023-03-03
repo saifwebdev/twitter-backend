@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
@@ -52,8 +53,12 @@ app.use((req, res, next) => {
     req.io = io
     next()
 });
+app.use(express.static(path.join(__dirname, '..', 'dist', 'twitter-clone')));
 app.use('/api/user', userRoutes);
 app.use('/api/tweet', tweetRoutes);
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'dist', 'twitter-clone', 'index.html'))
+});
 mongoose.connect('mongodb+srv://saif_web_dev:37444547@cluster0.eobeuhu.mongodb.net/?retryWrites=true&w=majority');
 
 server.listen(process.env.PORT || 3000, () => {
