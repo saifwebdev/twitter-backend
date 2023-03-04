@@ -69,7 +69,7 @@ router.post('/signup', async (req, res) => {
                 )
                 user.following.push(
                     {
-                        _id: mongoose.Types.ObjectId(),
+                        _id: new mongoose.Types.ObjectId(),
                         fullname: admin.fullname,
                         username: admin.username,
                         profilepictureurl: admin.profilepictureurl,
