@@ -9,13 +9,14 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: 'https://twitter-backend-eight.vercel.app',
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-});
+// const io = require('socket.io')(server, {
+//     cors: {
+//         origin: 'https://twitter-backend-eight.vercel.app',
+//         methods: ['GET', 'POST'],
+//         credentials: true
+//     }
+// });
+const io = require('socket.io')(server);
 const User = require('./schemas/userSchema');
 
 app.use(cors({
