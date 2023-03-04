@@ -813,18 +813,14 @@ router.post('/update-profile', verifyLogin, async (req, res) => {
                 }
             )
             await Tweet.updateMany(
-                [
-                    {
-                        $match: {
-                            'comments.username': user.username
-                        }
-                    },
-                    {
-                        $set: {
-                            'comments.$[comment].profilepictureurl': image_data.secure_url
-                        }
+                {
+                    'comments.username': user.username
+                },
+                {
+                    $set: {
+                        'comments.$[comment].profilepictureurl': image_data.secure_url
                     }
-                ],
+                },
                 {
                     arrayFilters: [
                         {
