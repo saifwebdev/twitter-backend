@@ -260,32 +260,59 @@ router.post('/follow-user', verifyLogin, async (req, res) => {
                     }
                 )
                 await User.updateMany(
+                    [
+                        {
+                            $match: {
+                                'followers.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'followers.$[follower].verified': false
+                            }
+                        }
+                    ],
                     {
-                        'followers.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'followers.$[].verified': false
+                        arrayFilters: {
+                            'follower.username': _user.username
                         }
                     }
                 )
                 await User.updateMany(
+                    [
+                        {
+                            $match: {
+                                'following.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'following.$[following].verified': false
+                            }
+                        }
+                    ],
                     {
-                        'following.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'following.$[].verified': false
+                        arrayFilters: {
+                            'following.username': _user.username
                         }
                     }
                 )
                 await Notification.updateMany(
+                    [
+                        {
+                            $match: {
+                                'notifications.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'notifications.$[notification].verified': false
+                            }
+                        }
+                    ],
                     {
-                        'notifications.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'notifications.$[].verified': false
+                        arrayFilters: {
+                            'notification.username': _user.username
                         }
                     }
                 )
@@ -300,22 +327,40 @@ router.post('/follow-user', verifyLogin, async (req, res) => {
                     }
                 )
                 await Tweet.updateMany(
+                    [
+                        {
+                            $match: {
+                                'likes.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'likes.$[like].verified': false
+                            }
+                        }
+                    ],
                     {
-                        'likes.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'likes.$[].verified': false
+                        arrayFilters: {
+                            'like.username': _user.username
                         }
                     }
                 )
                 await Tweet.updateMany(
+                    [
+                        {
+                            $match: {
+                                'comments.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'comments.$[comment].verified': false
+                            }
+                        }
+                    ],
                     {
-                        'comments.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'comments.$[].verified': false
+                        arrayFilters: {
+                            'comment.username': _user.username
                         }
                     }
                 )
@@ -389,32 +434,59 @@ router.post('/follow-user', verifyLogin, async (req, res) => {
                     }
                 )
                 await User.updateMany(
+                    [
+                        {
+                            $match: {
+                                'followers.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'followers.$[follower].verified': true
+                            }
+                        }
+                    ],
                     {
-                        'followers.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'followers.$[].verified': true
+                        arrayFilters: {
+                            'follower.username': _user.username
                         }
                     }
                 )
                 await User.updateMany(
+                    [
+                        {
+                            $match: {
+                                'following.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'following.$[following].verified': true
+                            }
+                        }
+                    ],
                     {
-                        'following.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'following.$[].verified': true
+                        arrayFilters: {
+                            'following.username': _user.username
                         }
                     }
                 )
                 await Notification.updateMany(
+                    [
+                        {
+                            $match: {
+                                'notifications.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'notifications.$[notification].verified': true
+                            }
+                        }
+                    ],
                     {
-                        'notifications.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'notifications.$[].verified': true
+                        arrayFilters: {
+                            'notification.username': _user.username
                         }
                     }
                 )
@@ -429,22 +501,40 @@ router.post('/follow-user', verifyLogin, async (req, res) => {
                     }
                 )
                 await Tweet.updateMany(
+                    [
+                        {
+                            $match: {
+                                'likes.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'likes.$[like].verified': true
+                            }
+                        }
+                    ],
                     {
-                        'likes.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'likes.$[].verified': true
+                        arrayFilters: {
+                            'like.username': _user.username
                         }
                     }
                 )
                 await Tweet.updateMany(
+                    [
+                        {
+                            $match: {
+                                'comments.username': _user.username
+                            }
+                        },
+                        {
+                            $set: {
+                                'comments.$[comment].verified': true
+                            }
+                        }
+                    ],
                     {
-                        'comments.username': _user.username
-                    },
-                    {
-                        $set: {
-                            'comments.$[].verified': true
+                        arrayFilters: {
+                            'comment.username': _user.username
                         }
                     }
                 )
@@ -637,32 +727,59 @@ router.post('/update-profile', verifyLogin, async (req, res) => {
                 }
             )
             await User.updateMany(
+                [
+                    {
+                        $match: {
+                            'followers.username': user.username
+                        }
+                    },
+                    {
+                        $set: {
+                            'followers.$[follower].profilepictureurl': image_data.secure_url
+                        }
+                    }
+                ],
                 {
-                    'followers.username': user.username
-                },
-                {
-                    $set: {
-                        'followers.$[].profilepictureurl': image_data.secure_url
+                    arrayFilters: {
+                        'follower.username': user.username
                     }
                 }
             )
             await User.updateMany(
+                [
+                    {
+                        $match: {
+                            'following.username': user.username
+                        }
+                    },
+                    {
+                        $set: {
+                            'following.$[following].profilepictureurl': image_data.secure_url
+                        }
+                    }
+                ],
                 {
-                    'following.username': user.username
-                },
-                {
-                    $set: {
-                        'followeing.$[].profilepictureurl': image_data.secure_url
+                    arrayFilters: {
+                        'following.username': user.username
                     }
                 }
             )
             await Notification.updateMany(
+                [
+                    {
+                        $match: {
+                            'notifications.username': user.username
+                        }
+                    },
+                    {
+                        $set: {
+                            'notifications.$[notification].profilepictureurl': image_data.secure_url
+                        }
+                    }
+                ],
                 {
-                    'notifications.username': user.username
-                },
-                {
-                    $set: {
-                        'notifications.$[].profilepictureurl': image_data.secure_url
+                    arrayFilters: {
+                        'notification.username': user.username
                     }
                 }
             )
@@ -677,22 +794,40 @@ router.post('/update-profile', verifyLogin, async (req, res) => {
                 }
             )
             await Tweet.updateMany(
+                [
+                    {
+                        $match: {
+                            'likes.username': user.username
+                        }
+                    },
+                    {
+                        $set: {
+                            'likes.$[like].profilepictureurl': image_data.secure_url
+                        }
+                    }
+                ],
                 {
-                    'likes.username': user.username
-                },
-                {
-                    $set: {
-                        'likes.$[].profilepictureurl': image_data.secure_url
+                    arrayFilters: {
+                        'like.username': user.username
                     }
                 }
             )
             await Tweet.updateMany(
+                [
+                    {
+                        $match: {
+                            'comments.username': user.username
+                        }
+                    },
+                    {
+                        $set: {
+                            'comments.$[comment].profilepictureurl': image_data.secure_url
+                        }
+                    }
+                ],
                 {
-                    'comments.username': user.username
-                },
-                {
-                    $set: {
-                        'comments.$[].profilepictureurl': image_data.secure_url
+                    arrayFilters: {
+                        'comment.username': user.username
                     }
                 }
             )
