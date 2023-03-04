@@ -9,20 +9,32 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
-// const io = require('socket.io')(server, {
-//     cors: {
-//         origin: '*',
-//         methods: ['GET', 'POST'],
-//         credentials: true
-//     }
-// });
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+    cors: {
+        origin: 'https://twitter-backend-eight.vercel.app',
+        methods: ['GET', 'POST'],
+        credentials: true
+    }
+});
 const User = require('./schemas/userSchema');
-// app.use(cors({
-//     origin: true,
-//     credentials: true
-// }));
-app.use(cors());
+
+io.on('connection', async (socket) => {
+    const username = socket.handshake.query.username;
+    await User.updateOne(
+        {
+            username: username
+        },
+        {
+            $set: {
+                socketid: socket.id
+            }
+        }
+    )
+});
+app.use(cors({
+    origin: 'https://twitter-backend-eight.vercel.app',
+    credentials: true
+}));
 app.use(cookieParser());
 app.use(bodyParser.json({
     limit: '200mb'
@@ -37,36 +49,13 @@ cloudinary.config({
     api_key: "352343729117897",
     api_secret: "N9YcZNBMneFCX50G0ITpixPmRIM"
 });
-const apiHandler = (req, res) => {
-    app.use((req, res, next) => {
-        req.io = io
-        next()
-    });
-    app.use('/api/user', userRoutes);
-    app.use('/api/tweet', tweetRoutes);
-};
-const socketHandler = (req, res) => {
-    io.on('connection', async (socket) => {
-        const username = socket.handshake.query.username;
-        await User.updateOne(
-            {
-                username: username
-            },
-            {
-                $set: {
-                    socketid: socket.id
-                }
-            }
-        )
-    });
-};
+app.use((req, res, next) => {
+    req.io = io
+    next()
+});
 app.use(express.static(path.join(__dirname, '.', 'twitter-clone')));
-if (req.url.startsWith('/socket.io')) {
-    socketHandler(req, res)
-}
-if (req.url.startsWith('/api/')) {
-    apiHandler(req, res)
-}
+app.use('/api/user', userRoutes);
+app.use('/api/tweet', tweetRoutes);
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '.', 'twitter-clone', 'index.html'))
 });
