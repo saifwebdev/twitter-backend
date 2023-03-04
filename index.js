@@ -18,6 +18,11 @@ const io = require('socket.io')(server, {
 });
 const User = require('./schemas/userSchema');
 
+app.use(cors({
+    origin: 'https://twitter-backend-xi.vercel.app',
+    credentials: true
+}));
+
 io.on('connection', async (socket) => {
     const username = socket.handshake.query.username;
     await User.updateOne(
@@ -31,10 +36,7 @@ io.on('connection', async (socket) => {
         }
     )
 });
-app.use(cors({
-    origin: 'https://twitter-backend-xi.vercel.app',
-    credentials: true
-}));
+
 app.use(cookieParser());
 app.use(bodyParser.json({
     limit: '200mb'
