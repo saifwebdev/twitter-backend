@@ -19,7 +19,7 @@ const io = require('socket.io')(server, {
 const User = require('./schemas/userSchema');
 
 app.use(cors({
-    origin: 'https://twitter-backend-xi.vercel.app',
+    origin: true,
     credentials: true
 }));
 
