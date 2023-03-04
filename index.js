@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
+const env = require('dotenv').config();
 
 app.use(cors({
     origin: 'https://twitter-backend-eight.vercel.app/',
