@@ -11,7 +11,7 @@ const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: 'https://twitter-backend-xi.vercel.app',
+        origin: '*',
         methods: ['GET', 'POST'],
         credentials: true
     }
