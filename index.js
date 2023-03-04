@@ -18,28 +18,11 @@ const server = require('http').createServer(app);
 // });
 const io = require('socket.io')(server);
 const User = require('./schemas/userSchema');
-
 // app.use(cors({
 //     origin: true,
 //     credentials: true
 // }));
-
 app.use(cors());
-
-io.on('connection', async (socket) => {
-    const username = socket.handshake.query.username;
-    await User.updateOne(
-        {
-            username: username
-        },
-        {
-            $set: {
-                socketid: socket.id
-            }
-        }
-    )
-});
-
 app.use(cookieParser());
 app.use(bodyParser.json({
     limit: '200mb'
@@ -54,13 +37,36 @@ cloudinary.config({
     api_key: "352343729117897",
     api_secret: "N9YcZNBMneFCX50G0ITpixPmRIM"
 });
-app.use((req, res, next) => {
-    req.io = io
-    next()
-});
+const apiHandler = (req, res) => {
+    app.use((req, res, next) => {
+        req.io = io
+        next()
+    });
+    app.use('/api/user', userRoutes);
+    app.use('/api/tweet', tweetRoutes);
+};
+const socketHandler = (req, res) => {
+    io.on('connection', async (socket) => {
+        const username = socket.handshake.query.username;
+        await User.updateOne(
+            {
+                username: username
+            },
+            {
+                $set: {
+                    socketid: socket.id
+                }
+            }
+        )
+    });
+};
 app.use(express.static(path.join(__dirname, '.', 'twitter-clone')));
-app.use('/api/user', userRoutes);
-app.use('/api/tweet', tweetRoutes);
+if (req.url.startsWith('/socket.io')) {
+    socketHandler(req, res)
+}
+if (req.url.startsWith('/api/')) {
+    apiHandler(req, res)
+}
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '.', 'twitter-clone', 'index.html'))
 });
