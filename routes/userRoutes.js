@@ -826,9 +826,11 @@ router.post('/update-profile', verifyLogin, async (req, res) => {
                     }
                 ],
                 {
-                    arrayFilters: {
-                        'comment.username': user.username
-                    }
+                    arrayFilters: [
+                        {
+                            'comment.username': user.username
+                        }
+                    ]
                 }
             )
         }
