@@ -64,79 +64,85 @@ router.post('/like-tweet', verifyLogin, async (req, res) => {
         const tweetid = req.body.tweetid
         const user = req.user
         const tweet = await Tweet.findOne({ _id: tweetid })
-        const _user = await User.findOne({ username: tweet.username })
-        const likes = tweet.likes.map(like => {
-            return like.username
-        })
-        if (likes.includes(user.username)) {
-            await Tweet.updateOne(
-                {
-                    _id: tweet._id
-                },
-                {
-                    $pull: {
-                        likes: {
-                            username: user.username
-                        }
-                    }
-                }
-            )
-            if (_user.username != user.username) {
-                await Notification.updateOne(
+        if (tweet) {
+            const _user = await User.findOne({ username: tweet.username })
+            const likes = tweet.likes.map(like => {
+                return like.username
+            })
+            if (likes.includes(user.username)) {
+                await Tweet.updateOne(
                     {
-                        username: _user.username
+                        _id: tweet._id
                     },
                     {
                         $pull: {
-                            notifications: {
-                                username: user.username,
-                                type: 'like',
-                                tweetid: tweetid
+                            likes: {
+                                username: user.username
                             }
                         }
                     }
                 )
-            }
-        } else {
-            await Tweet.updateOne(
-                {
-                    _id: tweet.id
-                },
-                {
-                    $push: {
-                        likes: {
-                            fullname: user.fullname,
-                            username: user.username,
-                            profilepictureurl: user.profilepictureurl,
-                            verified: user.verified
+                if (_user.username != user.username) {
+                    await Notification.updateOne(
+                        {
+                            username: _user.username
+                        },
+                        {
+                            $pull: {
+                                notifications: {
+                                    username: user.username,
+                                    type: 'like',
+                                    tweetid: tweetid
+                                }
+                            }
                         }
-                    }
+                    )
                 }
-            )
-            if (_user.username != user.username) {
-                await Notification.updateOne(
+            } else {
+                await Tweet.updateOne(
                     {
-                        username: _user.username
+                        _id: tweet.id
                     },
                     {
                         $push: {
-                            notifications: {
+                            likes: {
                                 fullname: user.fullname,
                                 username: user.username,
                                 profilepictureurl: user.profilepictureurl,
-                                type: 'like',
-                                tweetid: tweet._id,
                                 verified: user.verified
                             }
                         }
                     }
                 )
+                if (_user.username != user.username) {
+                    await Notification.updateOne(
+                        {
+                            username: _user.username
+                        },
+                        {
+                            $push: {
+                                notifications: {
+                                    fullname: user.fullname,
+                                    username: user.username,
+                                    profilepictureurl: user.profilepictureurl,
+                                    type: 'like',
+                                    tweetid: tweet._id,
+                                    verified: user.verified
+                                }
+                            }
+                        }
+                    )
+                }
             }
+            const updatedTweet = await Tweet.findOne({ _id: tweet._id })
+            res.json({
+                tweet: updatedTweet
+            })
+        } else {
+            res.json({
+                deleted: true
+            })
         }
-        const updatedTweet = await Tweet.findOne({ _id: tweet._id })
-        res.json({
-            tweet: updatedTweet
-        })
     } catch (error) {
         console.log(error)
     }
@@ -179,49 +185,55 @@ router.post('/post-comment', verifyLogin, async (req, res) => {
         const { tweetid, caption } = req.body
         const user = req.user
         const tweet = await Tweet.findOne({ _id: tweetid })
-        const _user = await User.findOne({ username: tweet.username })
-        const commentid = new mongoose.Types.ObjectId()
-        await Tweet.updateOne(
-            {
-                _id: tweet._id
-            },
-            {
-                $push: {
-                    comments: {
-                        _id: commentid,
-                        fullname: user.fullname,
-                        username: user.username,
-                        profilepictureurl: user.profilepictureurl,
-                        caption: caption,
-                        verified: user.verified
-                    }
-                }
-            }
-        )
-        if (_user.username != user.username) {
-            await Notification.updateOne(
+        if (tweet) {
+            const _user = await User.findOne({ username: tweet.username })
+            const commentid = new mongoose.Types.ObjectId()
+            await Tweet.updateOne(
                 {
-                    username: _user.username
+                    _id: tweet._id
                 },
                 {
                     $push: {
-                        notifications: {
+                        comments: {
+                            _id: commentid,
                             fullname: user.fullname,
                             username: user.username,
                             profilepictureurl: user.profilepictureurl,
-                            type: 'comment',
-                            tweetid: tweet._id,
-                            commentid: commentid,
+                            caption: caption,
                             verified: user.verified
                         }
                     }
                 }
             )
+            if (_user.username != user.username) {
+                await Notification.updateOne(
+                    {
+                        username: _user.username
+                    },
+                    {
+                        $push: {
+                            notifications: {
+                                fullname: user.fullname,
+                                username: user.username,
+                                profilepictureurl: user.profilepictureurl,
+                                type: 'comment',
+                                tweetid: tweet._id,
+                                commentid: commentid,
+                                verified: user.verified
+                            }
+                        }
+                    }
+                )
+            }
+            const updatedTweet = await Tweet.findOne({ _id: tweet._id })
+            res.json({
+                tweet: updatedTweet
+            })
+        } else {
+            res.json({
+                deleted: true
+            })
         }
-        const updatedTweet = await Tweet.findOne({ _id: tweet._id })
-        res.json({
-            tweet: updatedTweet
-        })
     } catch (error) {
         console.log(error)
     }
@@ -231,35 +243,41 @@ router.post('/delete-comment', verifyLogin, async (req, res) => {
         const { tweetid, commentid } = req.body
         const user = req.user
         const tweet = await Tweet.findOne({ _id: tweetid })
-        const _user = await User.findOne({ username: tweet.username })
-        await Tweet.updateOne(
-            {
-                _id: tweet._id
-            },
-            {
-                $pull: {
-                    comments: {
-                        _id: commentid
+        if (tweet) {
+            const _user = await User.findOne({ username: tweet.username })
+            await Tweet.updateOne(
+                {
+                    _id: tweet._id
+                },
+                {
+                    $pull: {
+                        comments: {
+                            _id: commentid
+                        }
                     }
                 }
-            }
-        )
-        await Notification.updateOne(
-            {
-                username: _user.username
-            },
-            {
-                $pull: {
-                    notifications: {
-                        commentid: commentid
+            )
+            await Notification.updateOne(
+                {
+                    username: _user.username
+                },
+                {
+                    $pull: {
+                        notifications: {
+                            commentid: commentid
+                        }
                     }
                 }
-            }
-        )
-        const updatedTweet = await Tweet.findOne({ _id: tweet._id })
-        res.json({
-            tweet: updatedTweet
-        })
+            )
+            const updatedTweet = await Tweet.findOne({ _id: tweet._id })
+            res.json({
+                tweet: updatedTweet
+            })
+        } else {
+            res.json({
+                deleted: true
+            })
+        }
     } catch (error) {
         console.log(error)
     }
