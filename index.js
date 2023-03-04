@@ -62,6 +62,6 @@ app.get('*', (req, res) => {
 });
 mongoose.connect('mongodb+srv://saif_web_dev:37444547@cluster0.eobeuhu.mongodb.net/?retryWrites=true&w=majority');
 
-server.listen(process.env.VERCEL_PORT, () => {
+server.listen(process.env.VERCEL_PORT || 3000, () => {
     console.log('Server listening on PORT 3000...')
 });
