@@ -9,19 +9,22 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-});
+// const io = require('socket.io')(server, {
+//     cors: {
+//         origin: '*',
+//         methods: ['GET', 'POST'],
+//         credentials: true
+//     }
+// });
+const io = require('socket.io')(server);
 const User = require('./schemas/userSchema');
 
-app.use(cors({
-    origin: true,
-    credentials: true
-}));
+// app.use(cors({
+//     origin: true,
+//     credentials: true
+// }));
+
+app.use(cors());
 
 io.on('connection', async (socket) => {
     const username = socket.handshake.query.username;
