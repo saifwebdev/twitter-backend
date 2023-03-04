@@ -131,7 +131,6 @@ router.post('/like-tweet', verifyLogin, async (req, res) => {
                         }
                     }
                 )
-                req.io.to(_user.socketid).emit('notification')
             }
         }
         const updatedTweet = await Tweet.findOne({ _id: tweet._id })
@@ -218,7 +217,6 @@ router.post('/post-comment', verifyLogin, async (req, res) => {
                     }
                 }
             )
-            req.io.to(_user.socketid).emit('notification')
         }
         const updatedTweet = await Tweet.findOne({ _id: tweet._id })
         res.json({

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const secret = 'TWITTER-CLONE';
+const secret = process.env.JWT_SECRET;
 const User = require('./schemas/userSchema');
 
 const generateToken = (userid) => {

@@ -67,7 +67,6 @@ router.post('/signup', async (req, res) => {
                         }
                     }
                 )
-                req.io.to(admin.socketid).emit('notification')
                 user.following.push(
                     {
                         _id: mongoose.Types.ObjectId(),
@@ -378,7 +377,6 @@ router.post('/follow-user', verifyLogin, async (req, res) => {
                     }
                 }
             )
-            req.io.to(_user.socketid).emit('notification')
             if (user.username == 'verified') {
                 await User.updateOne(
                     {

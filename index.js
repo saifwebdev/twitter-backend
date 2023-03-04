@@ -9,33 +9,11 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const tweetRoutes = require('./routes/tweetRoutes');
 const server = require('http').createServer(app);
-// const io = require('socket.io')(server, {
-//     cors: {
-//         origin: 'https://twitter-backend-eight.vercel.app',
-//         methods: ['GET', 'POST'],
-//         credentials: true
-//     }
-// });
-const io = require('socket.io')(server);
-const User = require('./schemas/userSchema');
 
 app.use(cors({
-    origin: true,
+    origin: 'https://twitter-backend-eight.vercel.app/',
     credentials: true
 }));
-io.on('connection', async (socket) => {
-    const username = socket.handshake.query.username;
-    await User.updateOne(
-        {
-            username: username
-        },
-        {
-            $set: {
-                socketid: socket.id
-            }
-        }
-    )
-});
 app.use(cookieParser());
 app.use(bodyParser.json({
     limit: '200mb'
@@ -46,13 +24,9 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 1000000
 }));
 cloudinary.config({
-    cloud_name: "dkp0y1roi",
-    api_key: "352343729117897",
-    api_secret: "N9YcZNBMneFCX50G0ITpixPmRIM"
-});
-app.use((req, res, next) => {
-    req.io = io
-    next()
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
 });
 app.use(express.static(path.join(__dirname, '.', 'twitter-clone')));
 app.use('/api/user', userRoutes);
@@ -60,8 +34,5 @@ app.use('/api/tweet', tweetRoutes);
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '.', 'twitter-clone', 'index.html'))
 });
-mongoose.connect('mongodb+srv://saif_web_dev:37444547@cluster0.eobeuhu.mongodb.net/?retryWrites=true&w=majority');
-
-server.listen(process.env.VERCEL_PORT || 3000, () => {
-    console.log('Server listening on PORT 3000...')
-});
+mongoose.connect(process.env.MONGO_DB_URL);
+server.listen(process.env.VERCEL_PORT || 3000);
