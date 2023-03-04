@@ -726,92 +726,92 @@ router.post('/update-profile', verifyLogin, async (req, res) => {
                     }
                 }
             )
-            await User.updateMany(
-                [
-                    {
-                        $match: {
-                            'followers.username': user.username
-                        }
-                    },
-                    {
-                        $set: {
-                            'followers.$[follower].profilepictureurl': image_data.secure_url
-                        }
-                    }
-                ],
-                {
-                    arrayFilters: {
-                        'follower.username': user.username
-                    }
-                }
-            )
-            await User.updateMany(
-                [
-                    {
-                        $match: {
-                            'following.username': user.username
-                        }
-                    },
-                    {
-                        $set: {
-                            'following.$[following].profilepictureurl': image_data.secure_url
-                        }
-                    }
-                ],
-                {
-                    arrayFilters: {
-                        'following.username': user.username
-                    }
-                }
-            )
-            await Notification.updateMany(
-                [
-                    {
-                        $match: {
-                            'notifications.username': user.username
-                        }
-                    },
-                    {
-                        $set: {
-                            'notifications.$[notification].profilepictureurl': image_data.secure_url
-                        }
-                    }
-                ],
-                {
-                    arrayFilters: {
-                        'notification.username': user.username
-                    }
-                }
-            )
-            await Tweet.updateMany(
-                {
-                    username: user.username
-                },
-                {
-                    $set: {
-                        profilepictureurl: image_data.secure_url
-                    }
-                }
-            )
-            await Tweet.updateMany(
-                [
-                    {
-                        $match: {
-                            'likes.username': user.username
-                        }
-                    },
-                    {
-                        $set: {
-                            'likes.$[like].profilepictureurl': image_data.secure_url
-                        }
-                    }
-                ],
-                {
-                    arrayFilters: {
-                        'like.username': user.username
-                    }
-                }
-            )
+            // await User.updateMany(
+            //     [
+            //         {
+            //             $match: {
+            //                 'followers.username': user.username
+            //             }
+            //         },
+            //         {
+            //             $set: {
+            //                 'followers.$[follower].profilepictureurl': image_data.secure_url
+            //             }
+            //         }
+            //     ],
+            //     {
+            //         arrayFilters: {
+            //             'follower.username': user.username
+            //         }
+            //     }
+            // )
+            // await User.updateMany(
+            //     [
+            //         {
+            //             $match: {
+            //                 'following.username': user.username
+            //             }
+            //         },
+            //         {
+            //             $set: {
+            //                 'following.$[following].profilepictureurl': image_data.secure_url
+            //             }
+            //         }
+            //     ],
+            //     {
+            //         arrayFilters: {
+            //             'following.username': user.username
+            //         }
+            //     }
+            // )
+            // await Notification.updateMany(
+            //     [
+            //         {
+            //             $match: {
+            //                 'notifications.username': user.username
+            //             }
+            //         },
+            //         {
+            //             $set: {
+            //                 'notifications.$[notification].profilepictureurl': image_data.secure_url
+            //             }
+            //         }
+            //     ],
+            //     {
+            //         arrayFilters: {
+            //             'notification.username': user.username
+            //         }
+            //     }
+            // )
+            // await Tweet.updateMany(
+            //     {
+            //         username: user.username
+            //     },
+            //     {
+            //         $set: {
+            //             profilepictureurl: image_data.secure_url
+            //         }
+            //     }
+            // )
+            // await Tweet.updateMany(
+            //     [
+            //         {
+            //             $match: {
+            //                 'likes.username': user.username
+            //             }
+            //         },
+            //         {
+            //             $set: {
+            //                 'likes.$[like].profilepictureurl': image_data.secure_url
+            //             }
+            //         }
+            //     ],
+            //     {
+            //         arrayFilters: {
+            //             'like.username': user.username
+            //         }
+            //     }
+            // )
             await Tweet.updateMany(
                 {
                     'comments.username': user.username
